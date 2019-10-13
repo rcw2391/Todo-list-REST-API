@@ -18,14 +18,28 @@ const compression = require('compression');
 
 const fs = require('fs');
 
+const rateLimiter = require('express-rate-limit');
+
 const MONGO_URI = process.env.MONGODB_URI;
 
 app.use(bodyParser.json());
 
+const authLimiter = rateLimiter({
+    windowMs: 1000 * 60 * 60,
+    max: 5,
+    skipSuccessfulRequests: true,
+    message: 'Too many attempts, please try again in an hour.',
+    handler: (req, res, next) => {
+        res.status(429).json({ message: this.message });
+    }
+});
+
+app.use('/login', authLimiter);
+
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, token, _id');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST','OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Origin, Content-Type, Authorization, token, _id');
     next();
 });
 
