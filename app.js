@@ -24,6 +24,7 @@ const MONGO_URI = process.env.MONGODB_URI;
 
 app.use(bodyParser.json());
 
+// Rate limiter for authentication
 const authLimiter = rateLimiter({
     windowMs: 1000 * 60 * 60,
     max: 5,
@@ -34,8 +35,10 @@ const authLimiter = rateLimiter({
     }
 });
 
+// Apply rate limiter middleware
 app.use('/login', authLimiter);
 
+// CORS
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST','OPTIONS');
@@ -43,18 +46,22 @@ app.use((req, res, next) => {
     next();
 });
 
+// Logging stream
 const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), {flags: 'a'});
 
+// Add helmet and logging
 app.use(helmet());
 app.use(compression());
 app.use(morgan('combined', {stream: accessLogStream}));
 
 app.use(routes);
 
+// Error handling middleware
 app.use((error, req, res, next) => {
     res.status(500).json({message: 'Server error.'});
 });
 
+// Connect to MONGODB
 mongoose
     .connect(
         MONGO_URI,
