@@ -14,6 +14,7 @@ const transporter = nodemailer.createTransport(sendgridTransport({
     }
 }));
 
+// Post a new list
 exports.postNewToDoList = (req, res, next) => {
     let todoLists = req.body.items;
     const regex = /[^\w\s]/g;
@@ -40,10 +41,12 @@ exports.postNewToDoList = (req, res, next) => {
     });
 }
 
+// Retrieve tolists
 exports.getToDoList = (req, res, next) => {
     res.status(200).json({todo: req.user.todoLists});
 }
 
+// Post sign up request
 exports.postSignUp = (req, res, next) => {
     const email = req.body.email;
     const password = req.body.password;
@@ -88,6 +91,7 @@ exports.postSignUp = (req, res, next) => {
     });
 }
 
+// Login POST request
 exports.postLogin = (req,res, next) => {
     User.findOne({email: req.body.email})
     .then(user => {
@@ -113,6 +117,7 @@ exports.postLogin = (req,res, next) => {
     });
 }
 
+// Validate email POST request
 exports.postValidate = (req, res, next) => {
     const token = req.body.token;
     const email = req.body.email;
@@ -145,6 +150,7 @@ exports.postValidate = (req, res, next) => {
     });
 }
 
+// Reset password POST request
 exports.postResetPassword = (req, res, next) => {
     const email = req.body.email;
     User.findOne({email: email})
@@ -175,6 +181,7 @@ exports.postResetPassword = (req, res, next) => {
     });
 }
 
+// Verify password reset token POST request
 exports.postVerifyResetToken = (req, res, next) => {
     const email = req.body.email;
     const token = req.body.token;

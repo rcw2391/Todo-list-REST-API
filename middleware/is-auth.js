@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 
 const TOKEN_KEY = process.env.TOKEN;
 
+// Authentication middleware
 module.exports = (req, res, next) => {
     if (req.method === 'GET') {
         User.findById(req.headers._id)

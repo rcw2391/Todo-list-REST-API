@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
 
+// Schema for a Todo List
+
 const ToDoListSchema = new Schema({
     date: {
         date: {
